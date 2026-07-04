@@ -1,0 +1,1 @@
+package com.servicerca.repository; import com.servicerca.model.RecoveryToken;import org.springframework.data.jpa.repository.JpaRepository;import java.time.Instant;import java.util.*; public interface RecoveryTokenRepository extends JpaRepository<RecoveryToken,UUID>{Optional<RecoveryToken> findByTokenHashAndUsedAtIsNullAndExpiresAtAfter(String hash,Instant now);}

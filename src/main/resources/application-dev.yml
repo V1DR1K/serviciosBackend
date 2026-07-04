@@ -1,0 +1,2 @@
+logging.level.com.servicerca: DEBUG
+app.recovery-log-enabled: true

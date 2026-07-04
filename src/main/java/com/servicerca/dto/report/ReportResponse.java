@@ -1,0 +1,1 @@
+package com.servicerca.dto.report; import java.time.Instant;import java.util.UUID; public record ReportResponse(UUID id,UUID reportedUserId,UUID requestId,String reason,String details,Instant createdAt){}

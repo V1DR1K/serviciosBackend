@@ -1,0 +1,1 @@
+package com.servicerca.repository; import com.servicerca.model.PushSubscription;import org.springframework.data.jpa.repository.JpaRepository;import java.util.*; public interface PushSubscriptionRepository extends JpaRepository<PushSubscription,UUID>{Optional<PushSubscription> findByEndpoint(String endpoint);List<PushSubscription> findByUserId(UUID userId);}

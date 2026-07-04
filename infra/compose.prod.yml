@@ -1,0 +1,13 @@
+services:
+  db: {restart: unless-stopped}
+  ceph: {profiles: [local-ceph-disabled]}
+  backend:
+    image: "${DOCKERHUB_NAMESPACE}/servicerca-backend:${IMAGE_TAG:-latest}"
+    restart: unless-stopped
+    environment: {SPRING_PROFILES_ACTIVE: prod, S3_ENDPOINT: "${S3_ENDPOINT}"}
+    deploy: {resources: {limits: {memory: 768M, cpus: "1.0"}}}
+  frontend:
+    image: "${DOCKERHUB_NAMESPACE}/servicerca-frontend:${IMAGE_TAG:-latest}"
+    restart: unless-stopped
+    ports: ["127.0.0.1:4200:8080"]
+    deploy: {resources: {limits: {memory: 128M, cpus: "0.5"}}}

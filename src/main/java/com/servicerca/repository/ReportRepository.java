@@ -1,0 +1,1 @@
+package com.servicerca.repository; import com.servicerca.model.Report;import org.springframework.data.jpa.repository.JpaRepository;import java.util.UUID; public interface ReportRepository extends JpaRepository<Report,UUID>{boolean existsByReporterIdAndReportedUserId(UUID reporter,UUID reported);}

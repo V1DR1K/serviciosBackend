@@ -1,0 +1,1 @@
+package com.servicerca.dto.request; import com.servicerca.dto.user.UserSummaryResponse;import com.servicerca.model.ApplicationStatus;import java.time.Instant;import java.util.UUID; public record ApplicationResponse(UUID id,UserSummaryResponse professional,ApplicationStatus status,String message,Instant createdAt){}

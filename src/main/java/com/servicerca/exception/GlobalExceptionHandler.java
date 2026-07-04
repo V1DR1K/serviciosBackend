@@ -1,0 +1,8 @@
+package com.servicerca.exception; import com.servicerca.dto.common.*;import jakarta.servlet.http.HttpServletRequest;import org.springframework.http.*;import org.springframework.web.bind.MethodArgumentNotValidException;import org.springframework.web.bind.annotation.*;import java.time.Instant;import java.util.*;
+@RestControllerAdvice public class GlobalExceptionHandler{
+ @ExceptionHandler(ResourceNotFoundException.class)ResponseEntity<ApiErrorResponse> notFound(ResourceNotFoundException e,HttpServletRequest r){return error("NOT_FOUND",404,e.getMessage(),r,List.of());}
+ @ExceptionHandler(BusinessException.class)ResponseEntity<ApiErrorResponse> business(BusinessException e,HttpServletRequest r){return error(e.getCode(),409,e.getMessage(),r,List.of());}
+ @ExceptionHandler(MethodArgumentNotValidException.class)ResponseEntity<ApiErrorResponse> validation(MethodArgumentNotValidException e,HttpServletRequest r){var fields=e.getBindingResult().getFieldErrors().stream().map(x->new ApiFieldError(x.getField(),Objects.requireNonNullElse(x.getDefaultMessage(),"Inválido"))).toList();return error("VALIDATION_ERROR",400,"Hay campos inválidos.",r,fields);}
+ @ExceptionHandler(Exception.class)ResponseEntity<ApiErrorResponse> unexpected(Exception e,HttpServletRequest r){return error("INTERNAL_ERROR",500,"Ocurrió un error inesperado.",r,List.of());}
+ private ResponseEntity<ApiErrorResponse> error(String code,int status,String message,HttpServletRequest req,List<ApiFieldError> fields){return ResponseEntity.status(status).body(new ApiErrorResponse(code,Instant.now(),status,req.getRequestURI(),message,fields));}
+}

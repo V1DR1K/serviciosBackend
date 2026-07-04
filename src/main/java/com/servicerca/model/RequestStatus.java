@@ -1,0 +1,2 @@
+package com.servicerca.model;
+public enum RequestStatus { DRAFT, PUBLISHED, HAS_APPLICANTS, ASSIGNED, IN_PROGRESS, PENDING_CONFIRMATION, COMPLETED, CANCELLED }

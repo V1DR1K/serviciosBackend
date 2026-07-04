@@ -1,0 +1,1 @@
+package com.servicerca.dto.profile; import jakarta.validation.constraints.*;import java.util.Set; public record UpdateProfileRequest(@NotBlank String fullName,@Pattern(regexp="[0-9]{7,9}")String dni,@NotBlank String phone,@NotBlank String locality,@NotNull Double latitude,@NotNull Double longitude,boolean professionalEnabled,Set<Long> tradeIds,String photoUrl){}

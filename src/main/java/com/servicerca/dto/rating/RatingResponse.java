@@ -1,0 +1,1 @@
+package com.servicerca.dto.rating; import java.time.Instant;import java.util.UUID; public record RatingResponse(UUID id,UUID requestId,UUID authorId,UUID targetId,short score,String comment,Instant createdAt){}

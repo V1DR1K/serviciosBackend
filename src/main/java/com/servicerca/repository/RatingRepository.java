@@ -1,0 +1,1 @@
+package com.servicerca.repository; import com.servicerca.model.Rating;import org.springframework.data.jpa.repository.JpaRepository;import java.util.UUID; public interface RatingRepository extends JpaRepository<Rating,UUID>{boolean existsByRequestIdAndAuthorId(UUID r,UUID a);}

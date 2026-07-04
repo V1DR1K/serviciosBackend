@@ -1,0 +1,1 @@
+package com.servicerca.dto.user; import java.math.BigDecimal;import java.util.*; public record UserResponse(UUID id,String email,String fullName,String maskedDni,String phone,String photoUrl,String locality,Double latitude,Double longitude,boolean onboardingComplete,boolean professionalEnabled,boolean available,BigDecimal rating,int ratingCount,Set<TradeResponse> trades){}

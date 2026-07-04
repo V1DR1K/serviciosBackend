@@ -1,0 +1,1 @@
+package com.servicerca.dto.report; import jakarta.validation.constraints.*;import java.util.UUID; public record CreateReportRequest(@NotNull UUID reportedUserId,UUID requestId,@NotBlank String reason,@Size(max=800)String details){}

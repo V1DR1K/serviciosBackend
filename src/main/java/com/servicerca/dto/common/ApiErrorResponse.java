@@ -1,0 +1,1 @@
+package com.servicerca.dto.common; import java.time.Instant;import java.util.List; public record ApiErrorResponse(String code,Instant timestamp,int status,String path,String message,List<ApiFieldError> fields){}

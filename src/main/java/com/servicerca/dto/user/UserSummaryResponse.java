@@ -1,0 +1,1 @@
+package com.servicerca.dto.user; import java.math.BigDecimal;import java.util.UUID; public record UserSummaryResponse(UUID id,String fullName,String photoUrl,String locality,BigDecimal rating,int ratingCount,String phone){}

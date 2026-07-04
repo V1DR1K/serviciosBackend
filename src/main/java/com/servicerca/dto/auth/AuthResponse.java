@@ -1,0 +1,1 @@
+package com.servicerca.dto.auth; import com.servicerca.dto.user.UserResponse; public record AuthResponse(String tokenType,String accessToken,String refreshToken,long expiresInSeconds,UserResponse user){}

@@ -1,0 +1,1 @@
+package com.servicerca.repository; import com.servicerca.model.User;import org.springframework.data.jpa.repository.JpaRepository;import java.util.*; public interface UserRepository extends JpaRepository<User,UUID>{Optional<User> findByEmailIgnoreCaseAndDeletedAtIsNull(String email);}
