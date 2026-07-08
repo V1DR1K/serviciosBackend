@@ -1,6 +1,10 @@
 #!/usr/bin/env sh
 set -eu
 
+if [ "${DEPLOY_LOCKED:-}" != "1" ]; then
+  exec flock /tmp/servicerca-deploy.lock env DEPLOY_LOCKED=1 "$0" "$@"
+fi
+
 ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 BACKEND=$(CDPATH= cd -- "$ROOT/.." && pwd)
 FRONTEND=$(CDPATH= cd -- "$BACKEND/../serviciosFrontend" && pwd)
