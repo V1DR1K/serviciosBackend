@@ -38,7 +38,7 @@ public class DemoDataInitializer implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) {
-        if (users.findByEmailIgnoreCaseAndDeletedAtIsNull("usuario1@gmail.com").isPresent()) return;
+        if (users.findByEmailIgnoreCaseAndDeletedAtIsNull("cliente@gmail.com").isPresent()) return;
 
         var allTrades = trades.findAll();
         var plumbing = findByCode(allTrades, "PLUMBING");
@@ -337,8 +337,9 @@ public class DemoDataInitializer implements CommandLineRunner {
     private User saveUser(int id, String name, boolean pro, boolean onboarding,
                           String dni, String locality, double lat, double lng, Instant created) {
         var u = User.builder()
-                .email("usuario" + id + "@gmail.com")
-                .passwordHash(encoder.encode("usuario" + id))
+                .email(id == 1 ? "cliente@gmail.com" : id == 6 ? "proveedor@gmail.com" : "usuario" + id + "@gmail.com")
+                .passwordHash(encoder.encode(System.getenv().getOrDefault("DEMO_USER_PASSWORD", "ServicercaDemo2026!")))
+                .policiesVersion("2026-07-08").policiesAcceptedAt(Instant.now())
                 .fullName(name)
                 .phone(pro ? "+549341" + (4000000 + id * 10000) : "+549341" + (5000000 + id * 10000))
                 .dniEncrypted(crypto.encrypt(dni))

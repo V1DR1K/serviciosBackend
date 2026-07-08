@@ -49,3 +49,17 @@ infra/scripts/deploy.sh
 El frontend escucha solo en `127.0.0.1:4200`; colocar Caddy, Traefik o Nginx delante para TLS y dominio. Configurar en Docker Hub los repositorios `servicerca-backend` y `servicerca-frontend`. Los workflows esperan `DOCKERHUB_USERNAME` y `DOCKERHUB_TOKEN`. El script `publish.ps1` permite la publicación manual.
 
 Backups: `infra/scripts/backup.sh` o `backup.ps1`. Para restaurar: detener el backend y ejecutar `pg_restore --clean --if-exists -U servicerca -d servicerca archivo.dump` dentro del contenedor de DB.
+# ServiCerca API
+
+## Variables MVP
+
+- `JWT_SECRET`: secreto aleatorio de 32 caracteres o más (obligatorio en producción).
+- `DEMO_DATA_ENABLED=true` y `DEMO_USER_PASSWORD`: habilitan `cliente@gmail.com` y `proveedor@gmail.com` en entornos de prueba.
+- `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_AUTH`, `SMTP_STARTTLS` y `MAIL_FROM`: correo transaccional. Para desarrollo puede usarse Mailpit en `localhost:1025`.
+- `FRONTEND_URL`: origen permitido por CORS y URL pública de la aplicación.
+
+Nunca registrar tokens, contraseñas, contenido de correos ni datos personales. Los documentos legales incluidos son borradores y requieren revisión profesional.
+
+## Verificación
+
+Ejecutar `./mvnw test`. Flyway aplica las migraciones e índices al iniciar. Los endpoints de notificaciones aceptan `page` y `size` (máximo 50).
