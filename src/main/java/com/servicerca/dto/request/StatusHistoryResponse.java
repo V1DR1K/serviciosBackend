@@ -1,0 +1,1 @@
+package com.servicerca.dto.request;import com.servicerca.model.RequestStatus;import java.time.Instant;import java.util.UUID;public record StatusHistoryResponse(RequestStatus status,UUID actorId,Instant createdAt){}

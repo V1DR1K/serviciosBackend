@@ -1,0 +1,1 @@
+package com.servicerca.dto.notification;import java.time.Instant;import java.util.UUID;public record AppNotificationResponse(UUID id,UUID requestId,String type,String message,Instant createdAt,boolean read){}
