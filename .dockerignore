@@ -1,4 +1,6 @@
-target
 .git
+.github
 .idea
-infra/data
+target
+infra/.env
+infra/backups

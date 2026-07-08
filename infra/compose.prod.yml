@@ -1,13 +1,120 @@
+name: servicerca
+
 services:
-  db: {restart: unless-stopped}
-  ceph: {profiles: [local-ceph-disabled]}
+  db:
+    image: postgis/postgis:17-3.5-alpine
+    container_name: servicerca-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks: [internal]
+
+  minio:
+    image: minio/minio:RELEASE.2025-04-22T22-12-26Z
+    container_name: servicerca-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_KEY}
+    volumes:
+      - minio-data:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks: [internal]
+
+  minio-init:
+    image: minio/mc:RELEASE.2025-04-16T18-13-26Z
+    restart: "no"
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >-
+      /bin/sh -c "mc alias set local http://minio:9000 '$${S3_ACCESS_KEY}' '$${S3_SECRET_KEY}' &&
+      mc mb --ignore-existing local/'$${S3_BUCKET}'"
+    environment:
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY}
+      S3_SECRET_KEY: ${S3_SECRET_KEY}
+      S3_BUCKET: ${S3_BUCKET}
+    networks: [internal]
+
   backend:
-    image: "${DOCKERHUB_NAMESPACE}/servicerca-backend:${IMAGE_TAG:-latest}"
+    build:
+      context: ..
+    image: servicerca-backend:local
+    container_name: servicerca-backend
     restart: unless-stopped
-    environment: {SPRING_PROFILES_ACTIVE: prod, S3_ENDPOINT: "${S3_ENDPOINT}"}
-    deploy: {resources: {limits: {memory: 768M, cpus: "1.0"}}}
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DB_URL: jdbc:postgresql://db:5432/${POSTGRES_DB}
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      FRONTEND_URL: https://${DOMAIN}
+      S3_ENDPOINT: http://minio:9000
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY}
+      S3_SECRET_KEY: ${S3_SECRET_KEY}
+      S3_BUCKET: ${S3_BUCKET}
+      S3_REGION: ${S3_REGION:-us-east-1}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-disabled}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-disabled}
+      VAPID_PUBLIC_KEY: ${VAPID_PUBLIC_KEY:-}
+      VAPID_PRIVATE_KEY: ${VAPID_PRIVATE_KEY:-}
+    depends_on:
+      db:
+        condition: service_healthy
+      minio-init:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 18
+      start_period: 30s
+    networks:
+      internal: {}
+      edge:
+        aliases: [servicerca-backend]
+
   frontend:
-    image: "${DOCKERHUB_NAMESPACE}/servicerca-frontend:${IMAGE_TAG:-latest}"
+    build:
+      context: ../../serviciosFrontend
+    image: servicerca-frontend:local
+    container_name: servicerca-frontend
     restart: unless-stopped
-    ports: ["127.0.0.1:4200:8080"]
-    deploy: {resources: {limits: {memory: 128M, cpus: "0.5"}}}
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    networks:
+      internal: {}
+      edge:
+        aliases: [servicerca-frontend]
+
+volumes:
+  postgres-data: {}
+  minio-data: {}
+
+networks:
+  internal:
+    internal: true
+  edge:
+    external: true
+    name: kaza_default
