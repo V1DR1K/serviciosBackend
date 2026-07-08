@@ -1,0 +1,1 @@
+package com.servicerca.repository;import com.servicerca.model.RequestStatusHistory;import org.springframework.data.jpa.repository.JpaRepository;import java.util.*;public interface RequestStatusHistoryRepository extends JpaRepository<RequestStatusHistory,UUID>{List<RequestStatusHistory>findByRequestIdOrderByCreatedAtAsc(UUID requestId);}

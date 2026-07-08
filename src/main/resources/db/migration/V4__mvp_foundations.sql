@@ -1,0 +1,10 @@
+ALTER TABLE app_user ADD COLUMN policies_version VARCHAR(30);
+ALTER TABLE app_user ADD COLUMN policies_accepted_at TIMESTAMPTZ;
+CREATE TABLE request_status_history (id UUID PRIMARY KEY DEFAULT gen_random_uuid(),request_id UUID NOT NULL REFERENCES service_request(id) ON DELETE CASCADE,status VARCHAR(40) NOT NULL,actor_id UUID REFERENCES app_user(id),created_at TIMESTAMPTZ NOT NULL DEFAULT now());
+CREATE TABLE app_notification (id UUID PRIMARY KEY DEFAULT gen_random_uuid(),user_id UUID NOT NULL REFERENCES app_user(id) ON DELETE CASCADE,request_id UUID REFERENCES service_request(id) ON DELETE CASCADE,type VARCHAR(60) NOT NULL,message VARCHAR(500) NOT NULL,read_at TIMESTAMPTZ,created_at TIMESTAMPTZ NOT NULL DEFAULT now());
+CREATE INDEX idx_request_client_created ON service_request(client_id,created_at DESC) WHERE deleted_at IS NULL;
+CREATE INDEX idx_request_feed ON service_request(locality,trade_id,status,created_at DESC) WHERE deleted_at IS NULL;
+CREATE INDEX idx_application_request_created ON application(request_id,created_at);
+CREATE INDEX idx_rating_target_created ON rating(target_id,created_at DESC);
+CREATE INDEX idx_history_request_created ON request_status_history(request_id,created_at);
+CREATE INDEX idx_notification_user_created ON app_notification(user_id,created_at DESC);

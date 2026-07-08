@@ -16,6 +16,8 @@ public class User {
  @Column(nullable=false) @Builder.Default private BigDecimal rating=BigDecimal.ZERO;
  @Column(name="rating_count",nullable=false) private int ratingCount;
  @Column(name="deleted_at") private Instant deletedAt;
+ @Column(name="policies_version",length=30) private String policiesVersion;
+ @Column(name="policies_accepted_at") private Instant policiesAcceptedAt;
  @Column(name="created_at",nullable=false) private Instant createdAt;
  @Column(name="updated_at",nullable=false) private Instant updatedAt;
  @ManyToMany(fetch=FetchType.EAGER) @JoinTable(name="user_trade",joinColumns=@JoinColumn(name="user_id"),inverseJoinColumns=@JoinColumn(name="trade_id")) @Builder.Default private Set<Trade> trades=new HashSet<>();
