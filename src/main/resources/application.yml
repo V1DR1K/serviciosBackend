@@ -23,6 +23,7 @@ management.endpoints.web.exposure.include: health,info
 springdoc.swagger-ui.path: /swagger-ui.html
 app:
   frontend-url: ${FRONTEND_URL:http://localhost:4200}
+  demo-data-enabled: ${DEMO_DATA_ENABLED:false}
   jwt-secret: ${JWT_SECRET:change-this-development-secret-with-at-least-32-characters}
   encryption-key: ${ENCRYPTION_KEY:0123456789abcdef0123456789abcdef}
   storage:

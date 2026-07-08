@@ -23,6 +23,7 @@ services:
       JWT_SECRET: "${JWT_SECRET:-change-this-development-secret-with-at-least-32-characters}"
       ENCRYPTION_KEY: "${ENCRYPTION_KEY:-0123456789abcdef0123456789abcdef}"
       FRONTEND_URL: "${FRONTEND_URL:-http://localhost:4200}"
+      DEMO_DATA_ENABLED: "${DEMO_DATA_ENABLED:-true}"
       S3_ENDPOINT: http://ceph:8000
       S3_ACCESS_KEY: "${S3_ACCESS_KEY:-servicerca}"
       S3_SECRET_KEY: "${S3_SECRET_KEY:-servicerca-secret}"

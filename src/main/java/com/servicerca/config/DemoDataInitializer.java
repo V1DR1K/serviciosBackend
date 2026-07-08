@@ -3,8 +3,8 @@ package com.servicerca.config;
 import com.servicerca.model.*;
 import com.servicerca.repository.*;
 import com.servicerca.service.CryptoService;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +15,7 @@ import java.time.Instant;
 import java.util.*;
 
 @Component
-@Profile("dev")
+@ConditionalOnProperty(name = "app.demo-data-enabled", havingValue = "true")
 public class DemoDataInitializer implements CommandLineRunner {
 
     private final UserRepository users;
