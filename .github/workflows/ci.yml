@@ -42,4 +42,4 @@ jobs:
       - name: Deploy backend
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
-        run: ssh deploy@"$VPS_HOST" '/opt/apps/projects/serviciosBackend/infra/scripts/deploy.sh backend'
+        run: ssh deploy@"$VPS_HOST" "git -C /opt/apps/projects/serviciosBackend fetch origin main && git -C /opt/apps/projects/serviciosBackend reset --hard '${{ github.sha }}' && /opt/infra/bin/deploy-service servicerca api"
